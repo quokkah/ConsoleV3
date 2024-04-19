@@ -108,36 +108,29 @@ public class Main {
         System.out.println("(Type '- back' to get back to the start!)\nCreate your username:");
         uncheckedUsername = sc.nextLine();
         if (Objects.equals(uncheckedUsername, "- back")) {                          //TODO: replace if-else with switch
-            usernameInUse = false;
-            usernames[accountNumber] = null;
             signupOrLogin();
         } else {
-            if (uncheckedUsername.startsWith(" ")) {
-                System.out.println("Username cannot start with a space!");
+            for (String username : usernames) {                                     //checks if the inputted username is occupied
+                usernameInUse = Objects.equals(uncheckedUsername, username);
+                break;
+            }
+            if (usernameInUse) {
+                System.out.println("Username is already in use!");
                 signupUser();
             } else {
-                for (String username : usernames) {                                     //checks if the inputted username is occupied
-                    usernameInUse = Objects.equals(uncheckedUsername, username);
-                    break;
+                for (int x = usernames.length - 1; x >= 0; x--) {                   //checks if there is room for a new account
+                    if (Objects.equals(usernames[x], "")) {
+                        usernamePositionAvailable = true;
+                        accountNumber = x;
+                    }
                 }
-                if (usernameInUse) {
-                    System.out.println("Username is already in use!");
-                    signupUser();
+                usernames[accountNumber] = uncheckedUsername;
+                if (usernamePositionAvailable) {
+                    usernamePositionAvailable = false;
+                    signupPass();
                 } else {
-                    for (int x = usernames.length - 1; x >= 0; x--) {                   //checks if there is room for a new account
-                        if (Objects.equals(usernames[x], "")) {
-                            usernamePositionAvailable = true;
-                            accountNumber = x;
-                        }
-                    }
-                    usernames[accountNumber] = uncheckedUsername;
-                    if (usernamePositionAvailable) {
-                        usernamePositionAvailable = false;
-                        signupPass();
-                    } else {
-                        System.out.println("No place for username available!");
-                        signupOrLogin();
-                    }
+                    System.out.println("No place for username available!");
+                    signupOrLogin();
                 }
             }
         }
@@ -164,7 +157,7 @@ public class Main {
         }
     }
     static void loginUser() {
-        System.out.println("(Type '- back' to get back to the start!)\nEnter your username:");
+        System.out.println("(Type '- back' to get back to the start!)\nEnter your username:");          //TODO: make it so users cant enter "" to log in
         loginUsername = sc.nextLine();
         if (Objects.equals(loginUsername, "- back")) {
             signupOrLogin();
@@ -190,10 +183,10 @@ public class Main {
         loginPass = sc.nextLine();
         if (Objects.equals(loginPass, "- back")) {
             signupOrLogin();
-        } else {        //du bist toll
+        } else {        //du bist toll!
             if (Objects.equals(loginPass, passwords[accountNumber])) {          //if inputted password matches the correct password, \n go brrrrr
                 for (int x = 1; x <= 20; x++) {
-                    System.out.print("\n");
+                    System.out.print("\n");                                     //lots of \n go brrrrr
                 }
                 System.out.println("Welcome!");
                 consoleStart();
@@ -459,7 +452,7 @@ public class Main {
         System.out.println("Are you sure you want to log out?\n[1] Yes, log out\n[2] No, go back");
         switch (sc.nextLine()) {
             case "1":
-                for (int x = 1; x <= 20; x++) {
+                for (int x = 1; x <= 20; x++) {             //lots of \n go brrrrr
                     System.out.print("\n");
                 }
                 signupOrLogin();
