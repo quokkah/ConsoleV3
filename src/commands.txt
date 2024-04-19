@@ -1,0 +1,4 @@
+help - Show all available commands.
+password view|change - View or change your password.
+user view|change - View or change your username.
+logout - Log out of your account.
