@@ -107,7 +107,7 @@ public class Main {
     static void signupUser() {
         System.out.println("(Type '- back' to get back to the start!)\nCreate your username:");
         uncheckedUsername = sc.nextLine();
-        if (Objects.equals(uncheckedUsername, "- back")) {                          //TODO: replace if-else with switch
+        if (Objects.equals(uncheckedUsername, "- back")) {
             signupOrLogin();
         } else {
             for (String username : usernames) {                                     //checks if the inputted username is occupied
@@ -138,7 +138,7 @@ public class Main {
     static void signupPass() {
         System.out.println("Create your password:");
         uncheckedPassword = sc.nextLine();
-        if (Objects.equals(uncheckedPassword, "- back")) {                                            //TODO: replace if-else with switch
+        if (Objects.equals(uncheckedPassword, "- back")) {
             usernameInUse = false;
             usernames[accountNumber] = null;
             signupOrLogin();
@@ -157,24 +157,29 @@ public class Main {
         }
     }
     static void loginUser() {
-        System.out.println("(Type '- back' to get back to the start!)\nEnter your username:");          //TODO: make it so users cant enter "" to log in
+        System.out.println("(Type '- back' to get back to the start!)\nEnter your username:");
         loginUsername = sc.nextLine();
-        if (Objects.equals(loginUsername, "- back")) {
-            signupOrLogin();
-        } else {
-            for (int x = 0; x < usernames.length; x++) {                //checks if the inputted username exists
-                if (Objects.equals(loginUsername, usernames[x])) {
-                    usernameExists = true;
-                    accountNumber = x;
-                    break;
-                }
-            }
-            if (usernameExists) {                                       //if the username exists, you go on to input the password, if not show an error
-                loginPass();
-            } else {
-                System.out.println("This username does not exist, try again.");
+        switch (loginUsername) {
+            case "- back":
+                signupOrLogin();
+                break;
+            case "":
                 loginUser();
-            }
+                break;
+            default:
+                for (int x = 0; x < usernames.length; x++) {                //checks if the inputted username exists
+                    if (Objects.equals(loginUsername, usernames[x])) {
+                        usernameExists = true;
+                        accountNumber = x;
+                        break;
+                    }
+                }
+                if (usernameExists) {                                       //if the username exists, you go on to input the password, if not show an error
+                    loginPass();
+                } else {
+                    System.out.println("This username does not exist, try again.");
+                    loginUser();
+                }
         }
     }
     static void loginPass() {
