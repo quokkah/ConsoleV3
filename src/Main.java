@@ -1,10 +1,9 @@
+import java.io.*;
 import java.util.Objects;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
 import java.util.Scanner;
-import java.io.IOException;
-import java.io.Writer;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
 public class Main {
@@ -31,6 +30,49 @@ public class Main {
             throw new RuntimeException(e);
         }
     }
+    static Writer writerUserBackup;
+    static Path pathUserBackup = Paths.get("src/userBackup.txt");
+    static {
+        try {
+            writerUserBackup = Files.newBufferedWriter(pathUserBackup, StandardOpenOption.APPEND);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    static Writer writerPassBackup;
+    static Path pathPassBackup = Paths.get("src/passBackup.txt");
+    static {
+        try {
+            writerPassBackup = Files.newBufferedWriter(pathPassBackup, StandardOpenOption.APPEND);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    static BufferedReader backupReader;
+    static {
+        try {
+            backupReader = new BufferedReader(new FileReader("src/passwords.txt"));
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException(e);
+        }
+    }   //reader to check if files were saved properly
+    static Writer writerPassImport;     //imports content from passBackup.txt to passwords.txt
+    static {
+        try {
+            writerPassImport = Files.newBufferedWriter(pathPass, StandardOpenOption.APPEND);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+    static Writer writerUserImport;
+    static {
+        try {
+            writerUserImport = Files.newBufferedWriter(pathUsers, StandardOpenOption.APPEND);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 
     //Variables - Account Information
     static String[] usernames = new String[128];
@@ -60,6 +102,25 @@ public class Main {
 
     //Start of Program
     public static void main(String[] args) {
+        saveCheck();
+    }
+
+    //check if saved properly / backups
+    static void saveCheck() {
+        try {
+            if (backupReader.readLine() == null) {
+                for (String line : java.nio.file.Files.readAllLines(pathPassBackup)) {
+                    writerPassImport.write(line + "\n");
+                }
+                writerPassImport.close();
+                for (String line : java.nio.file.Files.readAllLines(pathUserBackup)) {
+                    writerUserImport.write(line + "\n");
+                }
+                writerUserImport.close();
+            }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
         dataToArray();
     }
 
@@ -300,22 +361,7 @@ public class Main {
                 case "leave":
                 case "ex":
                 case "exit":
-                    System.out.println("Do you want to close and save the program?\n[1] Yes\n[2] No");
-                    switch (sc.nextLine()) {
-                        case "1":
-                            try {
-                                writerUsers.close();    //written userdata gets saved
-                                writerPass.close();
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                            break;
-                        case "2":
-                            consoleStart();
-                            break;
-                        default:
-                            System.out.println("Please enter a number from 1-2!");
-                    }
+                    exit();
                     break;
                 default:
                     System.out.println("Unknown Command!");
@@ -468,6 +514,51 @@ public class Main {
             default:
                 System.out.println("Please enter a number from 1-2!");
                 logout();
+        }
+    }
+
+    static void exit() {
+        System.out.println("Do you want to close and save the program?\n[1] Yes\n[2] No");
+        switch (sc.nextLine()) {
+            case "1":
+                try {                                                                                  //username file gets cleared, so a duplicate doesn't get pasted on top
+                    Files.newBufferedWriter(pathUserBackup , StandardOpenOption.TRUNCATE_EXISTING);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                try {                                                                                  //password file gets cleared, so a duplicate doesn't get pasted on top
+                    Files.newBufferedWriter(pathPassBackup , StandardOpenOption.TRUNCATE_EXISTING);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                for (String username : usernames) {                                                    //array gets written into usernames.txt
+                    try {
+                        writerUserBackup.write(username + "\n");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                for (String password : passwords) {                                                    //array gets written into passwords.txt
+                    try {
+                        writerPassBackup.write(password + "\n");
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                try {
+                    writerUsers.close();    //written userdata gets saved
+                    writerPass.close();
+                    writerUserBackup.close();
+                    writerPassBackup.close();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+                break;
+            case "2":
+                consoleStart();
+                break;
+            default:
+                System.out.println("Please enter a number from 1-2!");
         }
     }
 }
