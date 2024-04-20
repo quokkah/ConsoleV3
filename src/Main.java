@@ -209,7 +209,7 @@ public class Main {
                 signupPass();
             } else {
                 passwords[accountNumber] = uncheckedPassword;
-                for (int x = 1; x <= 20; x++) {                                                          //lots of \n go brrrrr
+                for (int x = 1; x <= 20; x++) {                                                          //lots of \n go brrrr
                     System.out.print("\n");
                 }
                 System.out.println("Welcome!");
