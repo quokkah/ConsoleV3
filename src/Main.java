@@ -64,7 +64,7 @@ public class Main {
             throw new RuntimeException(e);
         }
     }
-    static Writer writerUserImport;
+    static Writer writerUserImport;     //imports content from userBackup.txt to usernames.txt
     static {
         try {
             writerUserImport = Files.newBufferedWriter(pathUsers, StandardOpenOption.APPEND);
